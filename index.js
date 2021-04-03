@@ -1,7 +1,7 @@
 const express = require("express");
-const { createPoolCluster } = require("mysql2");
 const connection = require("./database/database");
-
+const categoriesController = "./controllers/categories/CategoriesController.js";
+const articlesController = "./controllers/articles/ArticlesController.js";
 const app = express();
 
 app.set("view engine", "ejs");
@@ -18,9 +18,9 @@ connection
 	.cath((err) => {
 		console.log("failed connection" + err);
 	});
-app.get("/", (req, res) => {
-	res.render("index");
-});
+
+app.use("/", categoriesController);
+app.use("/", articlesController);
 
 app.listen(8080, () => {
 	console.log("server is running");
