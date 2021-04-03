@@ -1,8 +1,14 @@
 const express = require("express");
-const connection = require("./database/database");
-const categoriesController = "./controllers/categories/CategoriesController.js";
-const articlesController = "./controllers/articles/ArticlesController.js";
 const app = express();
+// DB
+const connection = require("./database/database");
+//Controllers	
+const categoriesController = require("./controllers/categories/CategoriesController.js");
+const articlesController = require("./controllers/articles/ArticlesController.js");
+
+//Models
+const Articles = require("./models/articles/Articles");
+const Category = require("./models/categories/Category");
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -15,11 +21,10 @@ connection
 	.then(() => {
 		console.log("successful connection");
 	})
-	.cath((err) => {
+	.catch((err) => {
 		console.log("failed connection" + err);
 	});
-
-app.use("/", categoriesController);
+app.use('/', categoriesController);
 app.use("/", articlesController);
 
 app.listen(8080, () => {
