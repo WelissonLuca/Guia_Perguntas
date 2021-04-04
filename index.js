@@ -30,11 +30,11 @@ app.use("/", articlesController);
 app.get("/", (req, res) => {
 	Article.findAll({
 		order: [["id", "DESC"]],
-	}).then((articles) => {
+	}).then((articles) =>
 		Category.findAll().then((categories) => {
 			res.render("index", { articles, categories });
-		});
-	});
+		})
+	);
 });
 
 app.get("/:slug", (req, res) => {
@@ -47,15 +47,32 @@ app.get("/:slug", (req, res) => {
 	})
 		.then((article) => {
 			if (article != undefined)
-				Category.findAll().then((categories) => {
-					res.render("article", { article, categories });
-				});
+				Category.findAll().then((categories) =>
+					res.render("article", { article, categories })
+				);
 			else res.redirect("/");
 		})
-		.catch((err) => {
-			res.redirect("/");
-		});
+		.catch((err) => res.redirect("/"));
 });
-app.listen(8080, () => {
-	console.log("server is running");
+
+app.get("/category/:slug", (req, res) => {
+	const { slug } = req.params;
+	Category.findOne({
+		where: {
+			slug: slug,
+		},
+		include: [{ model: Article }],
+	})
+		.then((category) => {
+			if (category != undefined)
+				Category.findAll().then((categories) =>
+					res.render("index", {
+						articles: category.articles,
+						categories: categories,
+					})
+				);
+			else res.redirect("/");
+		})
+		.catch((err) => res.redirect("/"));
 });
+app.listen(8080, () => console.log("server is running"));
