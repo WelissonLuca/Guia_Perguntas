@@ -8,7 +8,7 @@ router.get("/admin/articles", (req, res) => {
 	Article.findAll({
 		include: [{ model: Category }],
 	}).then((articles) => {
-		res.render("admin/articles/index", { articles });
+		res.render("./admin/articles/index", { articles: articles });
 	});
 });
 
