@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 		order: [["id", "DESC"]],
 	}).then((articles) => {
 		Category.findAll().then((categories) => {
-			res.render("index", { articles: articles, categories: categories });
+			res.render("index", { articles, categories });
 		});
 	});
 });
@@ -46,7 +46,10 @@ app.get("/:slug", (req, res) => {
 		},
 	})
 		.then((article) => {
-			if (article != undefined) res.render("article", { article });
+			if (article != undefined)
+				Category.findAll().then((categories) => {
+					res.render("article", { article, categories });
+				});
 			else res.redirect("/");
 		})
 		.catch((err) => {
