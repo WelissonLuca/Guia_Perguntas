@@ -6,10 +6,12 @@ const connection = require("./database/database");
 const categoriesController = require("./controllers/categories/CategoriesController.js");
 const articlesController = require("./controllers/articles/ArticlesController.js");
 
+const usersController = require('./controllers/user/UserController')
+
 //Models
 const Article = require("./models/articles/Articles");
 const Category = require("./models/categories/Category");
-
+const User = require("./models/user/User");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
@@ -26,6 +28,7 @@ connection
 	});
 app.use("/", categoriesController);
 app.use("/", articlesController);
+app.use("/", usersController);
 
 app.get("/", (req, res) => {
 	Article.findAll({
@@ -63,7 +66,6 @@ app.get("/category/:slug", (req, res) => {
 			slug: slug,
 		},
 		include: [{ model: Article }],
-		
 	})
 		.then((category) => {
 			if (category != undefined)
