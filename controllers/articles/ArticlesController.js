@@ -88,4 +88,37 @@ router.post("/articles/delete", (req, res) => {
 	else res.redirect("/admin/articles");
 });
 
+router.get("/articles/page/:num", (req, res) => {
+	const pageLimit = 4;
+
+	let page = req.params.num;
+	let offset = 0;
+
+	isNaN(page) || page == 0 || page == 1
+		? (offset = 0)
+		: (offset = (parseInt(page) - 1) * pageLimit);
+
+	Article.findAndCountAll({
+		limit: pageLimit,
+		offset: offset,
+		order: [["id", "DESC"]],
+	}).then((articles) => {
+		let next;
+		offset + pageLimit >= articles.count ? (next = false) : (next = true);
+
+		let result = {
+			page: parseInt(page),
+			next: next,
+			articles: articles,
+		};
+
+		Category.findAll().then((categories) => {
+			res.render("admin/articles/page", {
+				result: result,
+				categories: categories,
+			});
+		});
+	});
+});
+
 module.exports = router;
