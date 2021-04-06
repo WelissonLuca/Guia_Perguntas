@@ -18,14 +18,64 @@ router.get("/admin/articles/new", (req, res) => {
 	});
 });
 
-router.post("/articles/save", (req, res) => {
-	const { title, body, category } = req.body;
-	Article.create({
-		title,
-		slug: slugify(title),
-		body,
-		categoryId: category,
-	}).then(() => res.redirect("/admin/articles"));
+router.get("/admin/articles/edit/:id", (req, res) => {
+	const { id } = req.params;
+	if (!isNaN(id)) {
+		Article.findByPk(id)
+			.then((article) => {
+				if (article != undefined) {
+					Category.findAll().then((categories) => {
+						res.render("admin/articles/edit", {
+							article,
+							categories,
+						});
+					});
+				} else {
+					res.redirect("/admin/articles/");
+				}
+			})
+			.catch((error) => {
+				res.redirect("/admin/articles/");
+			});
+	} else {
+		res.redirect("/admin/articles/");
+	}
+});
+router.post("/articles/update", (req, res) => {
+	const { id, title, body, categoryId } = req.body;
+	Article.update(
+		{
+			title,
+			body,
+			slug: slugify(title).toLowerCase(),
+			categoryId,
+		},
+		{
+			where: { id },
+		}
+	)
+		.then(() => {
+			res.redirect("/admin/articles/");
+		})
+		.catch((error) => {
+			res.redirect("/admin/articles/");
+		});
+});
+router.post("/articles/update", (req, res) => {
+	const { title, body, category, slug } = req.body;
+	Article.update(
+		{
+			title,
+			slug: slugify(title),
+			body,
+			categoryId: category,
+		},
+		{
+			where: {
+				slug,
+			},
+		}
+	).then(() => res.redirect("/admin/articles"));
 });
 router.post("/articles/delete", (req, res) => {
 	const { id } = req.body;
