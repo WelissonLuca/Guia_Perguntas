@@ -7,13 +7,13 @@ const slugify = require("slugify");
 router.get("/admin/articles", (req, res) => {
 	Article.findAll({
 		include: [{ model: Category }],
-	}).then((articles) => {
-		res.render("./admin/articles/index", { articles: articles });
+	}).then(articles => {
+		res.render("./admin/articles/index", { articles });
 	});
 });
 
 router.get("/admin/articles/new", (req, res) => {
-	Category.findAll().then((categories) => {
+	Category.findAll().then(categories => {
 		res.render("admin/articles/new", { categories });
 	});
 });
@@ -22,9 +22,9 @@ router.get("/admin/articles/edit/:id", (req, res) => {
 	const { id } = req.params;
 	if (!isNaN(id)) {
 		Article.findByPk(id)
-			.then((article) => {
+			.then(article => {
 				if (article != undefined) {
-					Category.findAll().then((categories) => {
+					Category.findAll().then(categories => {
 						res.render("admin/articles/edit", {
 							article,
 							categories,
@@ -34,7 +34,7 @@ router.get("/admin/articles/edit/:id", (req, res) => {
 					res.redirect("/admin/articles/");
 				}
 			})
-			.catch((error) => {
+			.catch(error => {
 				res.redirect("/admin/articles/");
 			});
 	} else {
@@ -52,12 +52,12 @@ router.post("/articles/update", (req, res) => {
 		},
 		{
 			where: { id },
-		}
+		},
 	)
 		.then(() => {
 			res.redirect("/admin/articles/");
 		})
-		.catch((error) => {
+		.catch(error => {
 			res.redirect("/admin/articles/");
 		});
 });
@@ -74,7 +74,7 @@ router.post("/articles/update", (req, res) => {
 			where: {
 				slug,
 			},
-		}
+		},
 	).then(() => res.redirect("/admin/articles"));
 });
 router.post("/articles/delete", (req, res) => {
@@ -82,7 +82,7 @@ router.post("/articles/delete", (req, res) => {
 	if (id != undefined)
 		if (!isNaN(id))
 			Article.destroy({ where: { id } }).then(() =>
-				res.redirect("/admin/articles")
+				res.redirect("/admin/articles"),
 			);
 		else res.redirect("/admin/articles");
 	else res.redirect("/admin/articles");
@@ -102,7 +102,7 @@ router.get("/articles/page/:num", (req, res) => {
 		limit: pageLimit,
 		offset: offset,
 		order: [["id", "DESC"]],
-	}).then((articles) => {
+	}).then(articles => {
 		let next;
 		offset + pageLimit >= articles.count ? (next = false) : (next = true);
 
@@ -112,7 +112,7 @@ router.get("/articles/page/:num", (req, res) => {
 			articles: articles,
 		};
 
-		Category.findAll().then((categories) => {
+		Category.findAll().then(categories => {
 			res.render("admin/articles/page", {
 				result: result,
 				categories: categories,

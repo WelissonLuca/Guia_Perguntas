@@ -1,52 +1,44 @@
 <%- include('../../partials/header.ejs') %>
-<%- include('../../partials/navbar.ejs') %>
+    <%- include('../../partials/navbar.ejs') %>
 
-<body>
-    <div class="container">
-        <hr>
-        <h2>Artigos</h2>
-        <a class="btn btn-primary" href="/admin/articles/new">Criar novo artigo</a>
-        <hr>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Titulo</th>
-                    <th>Slug</th>
-                    <th>Categoria</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% articles.forEach(article =>{ %>
-                <tr>
-                    <th><%= article.id %></th>
-                    <th><%= article.title %></th>
-                    <th><%= article.slug %></th>
-                    <th><%= article.category.title %></th>
-                    <th>
-                        <a href="articles/edit/<%= article.id%>" class="btn btn-warning">Editar</a>
-                        <form action="/articles/delete" method="POST" style="display: inline;"
-                            onsubmit="confirmarDelecao(event,this)">
-                            <input type="hidden" name="id" value="<%= article.id %>">
-                            <button class="btn btn-danger">Deletar</button>
+        <body>
+            <div class="container">
+                <hr>
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Novo Artigo</h2>
+                    </div>
+                    <div class="card-body">
+                        <form action="/articles/save" method="POST">
+                            <input class="form-control" type="text" name="title"
+                                placeholder="Defina o titulo do artigo">
+                            <br>
+                            <textarea name="body" class="form-control" placeholder="Escreva o artigo"
+                                id="articles"></textarea>
+                            <br>
+                            <label>categorias</label>
+                            <select name="category" class="form-control">
+                                <% categories.forEach((category)=>{ %>
+                                    <option value="<%= category.id %>">
+                                        <%= category.title %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                            <br>
+                            <button class="btn btn-primary">Cadastrar</button>
                         </form>
-
-                    </th>
-                </tr>
-                <% })%>
-            </tbody>
-        </table>
-    </div>
-</body>
-<script>
-    function confirmarDelecao(event, form) {
-        event.preventDefault();
-        console.log("o formulario nao foi enviado")
-        var decisao = confirm("Voce deseja deletar esse artigo ?");
-        if (decisao) {
-            form.submit();
-        } else {}
-    }
-</script>
-<%- include('../../partials/footer.ejs') %>
+                    </div>
+                </div>
+            </div>
+        </body>
+        <script src="/tinymce/tinymce.min.js"></script>
+        <script>
+            tinymce.init({
+                language: 'pt_BR',
+                selector: "#articles",
+                plugins: [
+                    'advlist autolink link image lists print preview hr searchreplace wordcount fullscrean media save table insertdatetime paste emoticons'
+                ]
+            });
+        </script>
+        <%- include('../../partials/footer.ejs') %>

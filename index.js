@@ -6,7 +6,7 @@ const connection = require("./database/database");
 const categoriesController = require("./controllers/categories/CategoriesController.js");
 const articlesController = require("./controllers/articles/ArticlesController.js");
 
-const usersController = require('./controllers/user/UserController')
+const usersController = require("./controllers/user/UserController");
 
 //Models
 const Article = require("./models/articles/Articles");
@@ -23,7 +23,7 @@ connection
 	.then(() => {
 		console.log("successful connection");
 	})
-	.catch((err) => {
+	.catch(err => {
 		console.log("failed connection" + err);
 	});
 app.use("/", categoriesController);
@@ -34,10 +34,10 @@ app.get("/", (req, res) => {
 	Article.findAll({
 		order: [["id", "DESC"]],
 		limit: 4,
-	}).then((articles) =>
-		Category.findAll().then((categories) => {
+	}).then(articles =>
+		Category.findAll().then(categories => {
 			res.render("index", { articles, categories });
-		})
+		}),
 	);
 });
 
@@ -49,14 +49,14 @@ app.get("/:slug", (req, res) => {
 			slug,
 		},
 	})
-		.then((article) => {
+		.then(article => {
 			if (article != undefined)
-				Category.findAll().then((categories) =>
-					res.render("article", { article, categories })
+				Category.findAll().then(categories =>
+					res.render("article", { article, categories }),
 				);
 			else res.redirect("/");
 		})
-		.catch((err) => res.redirect("/"));
+		.catch(err => res.redirect("/"));
 });
 
 app.get("/category/:slug", (req, res) => {
@@ -67,16 +67,16 @@ app.get("/category/:slug", (req, res) => {
 		},
 		include: [{ model: Article }],
 	})
-		.then((category) => {
+		.then(category => {
 			if (category != undefined)
-				Category.findAll().then((categories) =>
+				Category.findAll().then(categories =>
 					res.render("index", {
 						articles: category.articles,
-						categories: categories,
-					})
+						categories,
+					}),
 				);
 			else res.redirect("/");
 		})
-		.catch((err) => res.redirect("/"));
+		.catch(err => res.redirect("/"));
 });
 app.listen(8080, () => console.log("server is running"));
