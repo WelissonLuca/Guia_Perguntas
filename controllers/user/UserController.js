@@ -64,4 +64,10 @@ router.post("/authenticate", (req, res) => {
 		} else res.redirect("/login");
 	});
 });
+
+router.get('/logout', (req, res) => {
+	req.session.user = undefined
+
+	res.redirect('/')
+})
 module.exports = router;
