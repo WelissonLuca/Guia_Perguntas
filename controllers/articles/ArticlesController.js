@@ -3,8 +3,8 @@ const router = express.Router();
 const Category = require("../../models/categories/Category");
 const Article = require("../../models/articles/Articles");
 const slugify = require("slugify");
-
-router.get("/admin/articles", (req, res) => {
+const adminAuth = require("../../middlewares/adminAuth");
+router.get("/admin/articles", adminAuth, (req, res) => {
 	Article.findAll({
 		include: [{ model: Category }],
 	}).then(articles => {
@@ -12,13 +12,13 @@ router.get("/admin/articles", (req, res) => {
 	});
 });
 
-router.get("/admin/articles/new", (req, res) => {
+router.get("/admin/articles/new", adminAuth, (req, res) => {
 	Category.findAll().then(categories => {
 		res.render("admin/articles/new", { categories });
 	});
 });
 
-router.get("/admin/articles/edit/:id", (req, res) => {
+router.get("/admin/articles/edit/:id", adminAuth, (req, res) => {
 	const { id } = req.params;
 	if (!isNaN(id)) {
 		Article.findByPk(id)
