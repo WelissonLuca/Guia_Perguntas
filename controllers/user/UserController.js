@@ -53,12 +53,13 @@ router.post("/authenticate", (req, res) => {
 		if (user != undefined) {
 			const correct = bcrypt.compareSync(password, user.password);
 
-			if (correct)
+			if (correct){
 				req.session.user = {
 					id: user.id,
 					email: user.email,
 				};
-				
+				res.redirect('/admin/articles')
+			}
 			else res.redirect("/login");
 		} else res.redirect("/login");
 	});
